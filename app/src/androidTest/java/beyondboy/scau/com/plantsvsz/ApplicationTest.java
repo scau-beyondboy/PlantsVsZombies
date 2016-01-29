@@ -1,4 +1,4 @@
-package beyondboy.scau.com.plantsvszombies;
+package beyondboy.scau.com.plantsvsz;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

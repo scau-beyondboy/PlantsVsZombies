@@ -1,4 +1,4 @@
-package beyondboy.scau.com.plantsvszombies;
+package beyondboy.scau.com.plantsvsz;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package beyondboy.scau.com.plantsvszombies;
+package beyondboy.scau.com.plantsvsz;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
