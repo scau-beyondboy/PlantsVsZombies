@@ -64,7 +64,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if(thread!=null)
         {
             thread.interrupt();
+            thread=null;
         }
+        surfaceHolder.removeCallback(this);
     }
 
     @Override
@@ -72,18 +74,19 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     {
         Canvas canvas=null;
         SurfaceHolder holder=this.surfaceHolder;
-        while (runing)
+        while (runing&&holder!=null)
         {
             // 获取内存的画布
             canvas=holder.lockCanvas();
             //先把图案绘制到内存中
             render(canvas);
             //一定要执行:绘制的内容结束,提交至屏幕进行绘制
-            holder.unlockCanvasAndPost(canvas);
+            if(canvas!=null)//防止屏幕旋转或崩溃导致canvas为空
+                holder.unlockCanvasAndPost(canvas);
             // 动画的产生的原因:1秒钟有24帧
             try
             {
-                Thread.sleep(1000 / 40);
+                Thread.sleep(1000 /40);
             } catch (InterruptedException e)
             {
                 e.printStackTrace();
