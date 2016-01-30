@@ -3,6 +3,7 @@ package beyondboy.scau.com.plantsvsz;
 import android.app.Application;
 
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.bugly.proguard.ab;
 
 /**
  * Author:beyondboy
@@ -12,11 +13,29 @@ import com.tencent.bugly.crashreport.CrashReport;
  */
 public class MyApplication extends Application
 {
+    private static MyApplication sMyApplication;
+    //多线程安全返回单例
+    public static MyApplication getInstance()
+    {
+        if (sMyApplication == null)
+        {
+            synchronized (MyApplication.class)
+            {
+                if (sMyApplication == null)
+                {
+                    sMyApplication = new MyApplication();
+                }
+            }
+        }
+        return sMyApplication;
+    }
     @Override
     public void onCreate()
     {
         super.onCreate();
+        sMyApplication=this;
         CrashReport.initCrashReport(this, "900019200", false);
+        ab.a=true;
         CrashReport.isDebug=true;
     }
 }
