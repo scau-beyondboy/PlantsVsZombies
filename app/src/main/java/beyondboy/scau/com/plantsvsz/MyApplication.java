@@ -2,6 +2,7 @@ package beyondboy.scau.com.plantsvsz;
 
 import android.app.Application;
 
+import com.squareup.leakcanary.LeakCanary;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.bugly.proguard.ab;
 
@@ -35,6 +36,7 @@ public class MyApplication extends Application
         super.onCreate();
         sMyApplication=this;
         CrashReport.initCrashReport(this, "900019200", false);
+        LeakCanary.install(this);
         ab.a=true;
         CrashReport.isDebug=true;
     }

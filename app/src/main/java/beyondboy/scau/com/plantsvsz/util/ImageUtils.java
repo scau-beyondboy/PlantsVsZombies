@@ -20,7 +20,7 @@ public final class ImageUtils
 {
     private static final String TAG = ImageUtils.class.getName();
 
-    /**根据目标参数缩放图片*/
+    /**根据一般是压缩图片，但如果图片比目标尺寸要小，则会图片放大到目标尺寸*/
     public  static Bitmap compressBitmap(@DrawableRes int imageId,final int targetw,final int targeth)
     {
         Context context=Config.APPCONTEXT;
@@ -51,7 +51,7 @@ public final class ImageUtils
     /**计算压缩比例*/
     public static int calculateInSampleSize(final int srcw,final int srch,final int targetw,final int targeth)
     {
-        int inSampleSize = 1;
+        int inSampleSize;
         // 计算出实际宽度和目标宽度的比率
         inSampleSize=Math.round((srcw / targetw + srch / targeth)>>2);
         BuglyLog.i(TAG, "原来宽度和高度："+srcw+"   "+srch+"  "+"目标宽度和高度:   "+targetw+"   "+targeth+"   缩放比例：  " + inSampleSize);
@@ -63,11 +63,11 @@ public final class ImageUtils
      */
     public static Bitmap resizeBitmap(Bitmap bitmap, int w, int h)
     {
-        if (bitmap != null)
+        // 获取传入图片的宽高
+        int width = bitmap.getWidth();// 600
+        int height = bitmap.getHeight();// 900
+        if (bitmap != null&&(w!=0&&h!=0))
         {
-            // 获取传入图片的宽高
-            int width = bitmap.getWidth();// 600
-            int height = bitmap.getHeight();// 900
             // 计算出缩放比例
             float scaleWidth = ((float) w) / width;// =320/600=0.53
             float scaleHeight = ((float) h) / height;// 480/900=0.53
@@ -75,9 +75,25 @@ public final class ImageUtils
             // 注意中间的参数，如果x>1的话，那么就是放大，如果x<1的话，就是缩小
             matrix.postScale(scaleWidth, scaleHeight);// 缩放的修正
             return Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
-        } else
+        }
+        else if(bitmap!=null&&w==0&&h==0)
+        {
+            Matrix matrix = new Matrix();
+            // 注意中间的参数，如果x>1的话，那么就是放大，如果x<1的话，就是缩小
+            matrix.postScale(Config.scaleWidth,Config.scaleHeight);// 缩放的修正
+            return Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+        }
+        else
         {
             throw new RuntimeException("传入的bitmap==null");
         }
+    }
+
+    /**
+     * 默认根据{@link Config#scaleWidth}和{@link Config#scaleHeight}来缩放图片
+     */
+    public static Bitmap resizeBitmap(Bitmap bitmap)
+    {
+        return resizeBitmap(bitmap,0,0);
     }
 }
