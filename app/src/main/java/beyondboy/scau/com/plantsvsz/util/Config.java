@@ -27,4 +27,7 @@ public final class Config
     public static Bitmap seedbankBitmap;
     public static Bitmap seedFlowerBitmap;
     public static Bitmap seedPeaBitmap;
+    // 定义跑道的图片
+    public static Bitmap[] flowerBitmaps = new Bitmap[8];
+    public static Bitmap[] peaBitmaps = new Bitmap[8];
 }

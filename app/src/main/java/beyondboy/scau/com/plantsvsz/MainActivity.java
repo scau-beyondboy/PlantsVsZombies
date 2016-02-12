@@ -14,6 +14,7 @@ import com.tencent.bugly.crashreport.BuglyLog;
 import beyondboy.scau.com.plantsvsz.util.Config;
 import beyondboy.scau.com.plantsvsz.util.ImageUtils;
 import beyondboy.scau.com.plantsvsz.view.GameView;
+import static beyondboy.scau.com.plantsvsz.util.Config.*;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -54,14 +55,14 @@ public class MainActivity extends AppCompatActivity
         //获取面板图片
         bitmap=ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources,R.drawable.seedbank,options));
         // 处理面板以及面板的上面图片
-       // Config.seedbankBitmap= bitmap;
+        Config.seedbankBitmap= bitmap;
         // 计算面板绘制的x坐标
         Config.seedbankX = (Config.SCREENINFO.x - bitmap.getWidth()) / 2;
         BuglyLog.i(TAG, "面板的x坐标："+Config.seedbankX);
         //获取面板高度和宽度
         int sbHeight=bitmap.getHeight();
         int sbWidth=bitmap.getWidth();
-        Config.seedbankBitmap= bitmap;
+       // Config.seedbankBitmap= bitmap;
         // 面板上面的图片宽度:面板图片宽度1/7,高度=面板图片高度
         bitmap= ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.seed_flower,options), sbWidth/ 7,
                 sbHeight);
@@ -69,5 +70,39 @@ public class MainActivity extends AppCompatActivity
         bitmap = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.seed_pea,options), sbWidth/ 7,
                 sbHeight);
         Config.seedPeaBitmap= bitmap;
+        // 跑道图片的初始化
+        flowerBitmaps[0] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_01),sbWidth/ 7,
+                sbHeight);
+        flowerBitmaps[1] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_02),sbWidth/ 7,
+                sbHeight);
+        flowerBitmaps[2] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_03),sbWidth/ 7,
+                sbHeight);
+        flowerBitmaps[3] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_04),sbWidth/ 7,
+                sbHeight);
+        flowerBitmaps[4] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_05),sbWidth/ 7,
+                sbHeight);
+        flowerBitmaps[5] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_06),sbWidth/ 7,
+                sbHeight);
+        flowerBitmaps[6] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_07),sbWidth/ 7,
+                sbHeight);
+        flowerBitmaps[7] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_08),sbWidth/ 7,
+                sbHeight);
+
+        peaBitmaps[0] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_01),sbWidth/ 7,
+                sbHeight);
+        peaBitmaps[1] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_02),sbWidth/ 7,
+                sbHeight);
+        peaBitmaps[2] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_03),sbWidth/ 7,
+                sbHeight);
+        peaBitmaps[3] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_04),sbWidth/ 7,
+                sbHeight);
+        peaBitmaps[4] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_05),sbWidth/ 7,
+                sbHeight);
+        peaBitmaps[5] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_06),sbWidth/ 7,
+                sbHeight);
+        peaBitmaps[6] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_07),sbWidth/ 7,
+                sbHeight);
+        peaBitmaps[7] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_08),sbWidth/ 7,
+                sbHeight);
     }
 }

@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
+import beyondboy.scau.com.plantsvsz.util.Config;
+
 /**
  * Author:beyondboy
  * Gmail:xuguoli.scau@gmail.com
@@ -29,8 +31,17 @@ public abstract class BaseModel
         mBitmap=bitmap;
         this.locationX=locationX;
         this.locationY=locationY;
-        // 实例化矩形对象:面板上面的图片的宽高是一致的
-        mRect = new Rect(this.locationX, this.locationY, this.locationX + bitmap.getWidth(), this.locationY + bitmap.getHeight());
+        this.states=status;
+        if(mBitmap!=null)
+        {
+            // 实例化矩形对象:面板上面的图片的宽高是一致的
+            mRect = new Rect(this.locationX, this.locationY, this.locationX + bitmap.getWidth(), this.locationY + bitmap.getHeight());
+        }
+        else
+        {
+            // 实例化矩形对象:面板上面的图片的宽高是一致的
+            mRect = new Rect(this.locationX, this.locationY, this.locationX + Config.seedFlowerBitmap.getWidth(), this.locationY +Config.seedFlowerBitmap.getHeight());
+        }
     }
 
     public int getLocationX()

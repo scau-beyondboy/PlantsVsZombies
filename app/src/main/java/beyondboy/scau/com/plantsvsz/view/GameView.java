@@ -35,6 +35,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private Paint paint;
     // 装面板上面的图片对象:向日葵,豌豆
     private LinkedList<Seedbank> seedbanks;
+    // 装等待安放到跑道的图片对象:向日葵,豌豆
+    private LinkedList<Seedbank> emplaces;
+    private static GameView gameView;
     public GameView(Context context)
     {
         super(context);
@@ -42,6 +45,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         surfaceHolder = getHolder();
         // 必须通过surfaceHolder加入对实现了SurfaceHolder.Callback进行监听:需要监听Surface的生命周期
         surfaceHolder.addCallback(this);
+        gameView=this;
+    }
+    // 提供一个对外访问静态属性的方法
+    public static GameView getInstanse()
+    {
+        return gameView;
     }
 
     @Override
@@ -67,19 +76,15 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint = new Paint();
         paint.setColor(Color.YELLOW);
         seedbanks=new LinkedList<>();
+        emplaces=new LinkedList<>();
         Bitmap bitmap=Config.seedbankBitmap;
-        if(bitmap!=null)
-        {
-           // BuglyLog.i(TAG, "数值计算："+(4+8<<1));
-            // 计算面板上面图片的宽度
-            int sbkimWidth=bitmap.getWidth()/7;
-            Seedbank flower=new Seedbank(Config.seedbankX+sbkimWidth,0,Seedbank.SEED_FLOWER,Config.seedFlowerBitmap);
-            Seedbank pea=new Seedbank(Config.seedbankX+(sbkimWidth<<1),0,Seedbank.SEED_PEA,Config.seedPeaBitmap);
-            if(flower!=null)
-                 seedbanks.add(flower);
-            if(pea!=null)
-                seedbanks.add(pea);
-        }
+        // BuglyLog.i(TAG, "数值计算："+(4+8<<1));
+        // 计算面板上面图片的宽度
+        int sbkimWidth=bitmap.getWidth()/7;
+        Seedbank flower=new Seedbank(Config.seedbankX+sbkimWidth,0,Seedbank.SEED_FLOWER,Config.seedFlowerBitmap);
+        Seedbank pea=new Seedbank(Config.seedbankX+(sbkimWidth<<1),0,Seedbank.SEED_PEA,Config.seedPeaBitmap);
+        seedbanks.add(flower);
+        seedbanks.add(pea);
     }
 
   /*  *//**绘制面板图案*//*
@@ -145,6 +150,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             {
                 seedbank.drawSelf(canvas);
             }
+            // 绘制等待安放到跑道的图片
+            for (Seedbank seedbank : emplaces)
+            {
+                seedbank.drawSelf(canvas);
+            }
         }
     }
    /* private void drawBitmap(WeakReference<Bitmap> bitmapWeakReference,Canvas canvas,int x,int y,Paint paint)
@@ -161,6 +171,16 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
+        // 处理等待安放到跑道的对象的触屏事件
+        for (Seedbank seedbank : emplaces)
+        {
+            //被触屏了
+            if(seedbank.onTouch(event))
+            {
+                return true;
+            }
+        }
+        // 处理面板上面对象的触屏事件
         for(Seedbank seedbank:seedbanks)
         {
             //被触屏了
@@ -170,5 +190,24 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             }
         }
         return super.onTouchEvent(event);
+    }
+    public void addEmplace(Seedbank seedbank)
+    {
+        if(emplaces.size()>0)
+        {
+            return;
+        }
+        if(seedbank.getStates()==Seedbank.SEED_FLOWER)
+        {
+            emplaces.add(new Seedbank(seedbank.getLocationX(),seedbank.getLocationY(),Seedbank.EMPLACE_FLOWER));
+        }
+        else if(seedbank.getStates()==Seedbank.SEED_PEA)
+        {
+            emplaces.add(new Seedbank(seedbank.getLocationX(),seedbank.getLocationY(),Seedbank.EMPLACE_PEA));
+        }
+        else
+        {
+            throw new RuntimeException("没有找到对应面板的对象:" + seedbank.getStates());
+        }
     }
 }
