@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 
 import com.tencent.bugly.crashreport.BuglyLog;
 
@@ -21,6 +22,7 @@ public final class ImageUtils
     private static final String TAG = ImageUtils.class.getName();
 
     /**根据一般是压缩图片，但如果图片比目标尺寸要小，则会图片放大到目标尺寸*/
+    @SuppressWarnings("unused")
     public  static Bitmap compressBitmap(@DrawableRes int imageId,final int targetw,final int targeth)
     {
         Context context=Config.APPCONTEXT;
@@ -32,7 +34,8 @@ public final class ImageUtils
         imageOptions.inJustDecodeBounds=false;
         //如果手机像素大于160，那么设置该信息后，图片的宽度和高度就不会被自动加倍
         imageOptions.inDensity=Config.DENSITYDPI;
-        imageOptions.inTargetDensity=Config.DENSITYDPI;
+       // imageOptions.inTargetDensity=Config.DENSITYDPI;
+       // imageOptions.inPreferredConfig=
         imageOptions.inSampleSize=calculateInSampleSize(imageOptions.outWidth,imageOptions.outHeight,targetw,targeth);
         //压缩图片
         Bitmap bitmap=BitmapFactory.decodeResource(context.getResources(), imageId, imageOptions);
@@ -61,12 +64,12 @@ public final class ImageUtils
     /**
      * 把传入的图片按照当前手机屏幕的大小进行横纵向比例缩放
      */
-    public static Bitmap resizeBitmap(Bitmap bitmap, int w, int h)
+    public static Bitmap resizeBitmap(@NonNull Bitmap bitmap, int w, int h)
     {
         // 获取传入图片的宽高
-        int width = bitmap.getWidth();// 600
-        int height = bitmap.getHeight();// 900
-        if (bitmap != null&&(w!=0&&h!=0))
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        if ((w != 0 && h != 0))
         {
             // 计算出缩放比例
             float scaleWidth = ((float) w) / width;// =320/600=0.53
@@ -74,14 +77,18 @@ public final class ImageUtils
             Matrix matrix = new Matrix();
             // 注意中间的参数，如果x>1的话，那么就是放大，如果x<1的话，就是缩小
             matrix.postScale(scaleWidth, scaleHeight);// 缩放的修正
-            return Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+            Bitmap handlerBitmap= Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+            BuglyLog.i(TAG, "图片的内存： " + handlerBitmap.getRowBytes() * bitmap.getHeight() / 1024+"k");
+            return handlerBitmap;
         }
-        else if(bitmap!=null&&w==0&&h==0)
+        else if(w == 0 && h == 0)
         {
             Matrix matrix = new Matrix();
             // 注意中间的参数，如果x>1的话，那么就是放大，如果x<1的话，就是缩小
             matrix.postScale(Config.scaleWidth,Config.scaleHeight);// 缩放的修正
-            return Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+            Bitmap handlerBitmap= Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+            BuglyLog.i(TAG, "图片的内存： " + handlerBitmap.getRowBytes() * bitmap.getHeight() / 1024 +"k");
+            return handlerBitmap;
         }
         else
         {
@@ -92,7 +99,7 @@ public final class ImageUtils
     /**
      * 默认根据{@link Config#scaleWidth}和{@link Config#scaleHeight}来缩放图片
      */
-    public static Bitmap resizeBitmap(Bitmap bitmap)
+    public static Bitmap resizeBitmap(@NonNull Bitmap bitmap)
     {
         return resizeBitmap(bitmap,0,0);
     }
