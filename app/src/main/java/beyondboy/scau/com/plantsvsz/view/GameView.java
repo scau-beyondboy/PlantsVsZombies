@@ -11,6 +11,7 @@ import android.view.SurfaceView;
 
 import java.util.LinkedList;
 
+import beyondboy.scau.com.plantsvsz.model.Plan;
 import beyondboy.scau.com.plantsvsz.model.Seedbank;
 import beyondboy.scau.com.plantsvsz.util.Config;
 
@@ -37,6 +38,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private LinkedList<Seedbank> seedbanks;
     // 装等待安放到跑道的图片对象:向日葵,豌豆
     private LinkedList<Seedbank> emplaces;
+    // 装跑道的对象
+    private LinkedList<Plan> plans;
     private static GameView gameView;
     public GameView(Context context)
     {
@@ -77,6 +80,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(Color.YELLOW);
         seedbanks=new LinkedList<>();
         emplaces=new LinkedList<>();
+        plans=new LinkedList<>();
         Bitmap bitmap=Config.seedbankBitmap;
         // BuglyLog.i(TAG, "数值计算："+(4+8<<1));
         // 计算面板上面图片的宽度
@@ -150,6 +154,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             {
                 seedbank.drawSelf(canvas);
             }
+            // 绘制跑道的图片
+            for (Plan plan : plans)
+            {
+                plan.drawSelf(canvas);
+            }
             // 绘制等待安放到跑道的图片
             for (Seedbank seedbank : emplaces)
             {
@@ -191,6 +200,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         }
         return super.onTouchEvent(event);
     }
+    // 把面板对象变成等待安放到跑道的对象:
     public void addEmplace(Seedbank seedbank)
     {
         if(emplaces.size()>0)
@@ -209,5 +219,23 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         {
             throw new RuntimeException("没有找到对应面板的对象:" + seedbank.getStates());
         }
+    }
+    // 把等待安放状态的对象变成跑道的对象
+    public void addPlan(Seedbank seedbank)
+    {
+        // 在跑道同一个位置只能放置一个
+        if(seedbank.getStates()==Seedbank.EMPLACE_FLOWER)
+        {
+            plans.add(new Plan(seedbank.getLocationX(),seedbank.getLocationY(),Plan.PLAN_FLOWER));
+        }
+        else if(seedbank.getStates()==Seedbank.EMPLACE_PEA)
+        {
+            plans.add(new Plan(seedbank.getLocationX(),seedbank.getLocationY(),Plan.PLAN_PEA));
+        }
+        else
+        {
+            throw new RuntimeException("没有找到对应等待安放状态的对象:" + seedbank.getStates());
+        }
+        emplaces.clear();
     }
 }

@@ -97,6 +97,7 @@ public class Seedbank extends BaseModel implements TouchAble
                     {
                         // 在跑道里面寻找合适的位置进行安放
                         BuglyLog.i(TAG, "在跑道里面寻找合适的位置进行安放");
+                        GameView.getInstanse().addPlan(this);
                     }
                     return true;
             }
