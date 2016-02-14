@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import beyondboy.scau.com.plantsvsz.util.Config;
+import beyondboy.scau.com.plantsvsz.view.GameView;
 
 /**
  * Author:beyondboy
@@ -21,10 +22,19 @@ public class Plan extends BaseModel
     //减慢对象摇摆速度
     private int slow=0;
     private int indexPea, indexFlower;
-
+    private long createFlowerTime, createPeaTime;
     public Plan(int locationX, int locationY, int status, Bitmap bitmap)
     {
         super(locationX, locationY, status, bitmap);
+        long nowTime=System.currentTimeMillis();
+        if(status==PLAN_FLOWER)
+        {
+            this.createFlowerTime=nowTime;
+        }
+        else if(status==PLAN_PEA)
+        {
+            this.createPeaTime=nowTime;
+        }
     }
     public Plan(int locationX, int locationY, int status)
     {
@@ -34,9 +44,16 @@ public class Plan extends BaseModel
     @Override
     public void drawSelf(Canvas canvas)
     {
+        long nowTime=System.currentTimeMillis();
         if(states==PLAN_FLOWER)
         {
             canvas.drawBitmap(Config.flowerBitmaps[indexFlower],this.locationX,this.locationY,null);
+            // 在一定的时间范围内产生阳光
+            if(nowTime-createFlowerTime>Config.createSunTime)
+            {
+                GameView.getInstanse().addSun(this);
+                createFlowerTime=nowTime;
+            }
         }
         else if(states==PLAN_PEA)
         {

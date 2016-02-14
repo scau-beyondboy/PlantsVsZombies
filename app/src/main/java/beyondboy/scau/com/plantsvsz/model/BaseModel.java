@@ -25,6 +25,8 @@ public abstract class BaseModel
     // 状态:区分是什么植物向日葵,豌豆,子弹
     protected int states;
     protected Bitmap mBitmap;
+    // 生命值:小于1表示当前对象已经死亡
+    protected int lifeValue = 10;
 
     public BaseModel(int locationX, int locationY, int status,Bitmap bitmap)
     {
@@ -69,6 +71,10 @@ public abstract class BaseModel
         return life;
     }
 
+    public boolean isDean()
+    {
+        return this.lifeValue<1;
+    }
     public void setLife(int life)
     {
         this.life = life;

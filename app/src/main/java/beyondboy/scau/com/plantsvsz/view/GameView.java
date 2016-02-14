@@ -5,15 +5,24 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import beyondboy.scau.com.plantsvsz.model.Plan;
 import beyondboy.scau.com.plantsvsz.model.Seedbank;
+import beyondboy.scau.com.plantsvsz.model.Sun;
 import beyondboy.scau.com.plantsvsz.util.Config;
+
+import static beyondboy.scau.com.plantsvsz.util.Config.cellHeight;
+import static beyondboy.scau.com.plantsvsz.util.Config.cellWidth;
+import static beyondboy.scau.com.plantsvsz.util.Config.plantPoints;
 
 /**
  * Author:beyondboy
@@ -39,7 +48,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     // 装等待安放到跑道的图片对象:向日葵,豌豆
     private LinkedList<Seedbank> emplaces;
     // 装跑道的对象
-    private LinkedList<Plan> plans;
+    private SparseArray<Plan> plans;
+    // 装跑道的阳光
+    private List<Sun> suns;
     private static GameView gameView;
     public GameView(Context context)
     {
@@ -80,7 +91,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(Color.YELLOW);
         seedbanks=new LinkedList<>();
         emplaces=new LinkedList<>();
-        plans=new LinkedList<>();
+        plans=new SparseArray<>();
+        suns=new CopyOnWriteArrayList<>();
         Bitmap bitmap=Config.seedbankBitmap;
         // BuglyLog.i(TAG, "数值计算："+(4+8<<1));
         // 计算面板上面图片的宽度
@@ -154,10 +166,41 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             {
                 seedbank.drawSelf(canvas);
             }
-            // 绘制跑道的图片
-            for (Plan plan : plans)
+            // 绘制跑道的单元格线
+            for (int i = 0; i < 5; i++)
             {
-                plan.drawSelf(canvas);
+                int y=(int)(cellHeight*0.85)+i*cellHeight;
+                int startx=0;
+                canvas.drawLine(startx,y,Config.SCREENINFO.x,y,paint);
+            }
+            for (int j = 0; j <9 ; j++)
+            {
+                int x=(int)(cellHeight*1.5)+j*cellWidth;
+                int starty=0;
+                canvas.drawLine(x,starty,x,Config.SCREENINFO.y,paint);
+            }
+           // BuglyLog.i(TAG, "容量：   "+plans.size());
+            // 绘制放在跑道对象的图片
+            for (int i = 0; i < plantPoints.size(); i++)
+            {
+                Plan plan=plans.get(i);
+               // BuglyLog.i(TAG, "是否为空：  "+plans.get(i)+"   索引：  "+i);
+                if(plan!=null)
+                {
+                    plan.drawSelf(canvas);
+                }
+            }
+            for(Sun sun:suns)
+            {
+                //阳光没有手机死亡就不绘制
+                if(sun.isDean())
+                {
+                    suns.remove(sun);
+                }
+                else
+                {
+                    sun.drawSelf(canvas);
+                }
             }
             // 绘制等待安放到跑道的图片
             for (Seedbank seedbank : emplaces)
@@ -223,19 +266,43 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     // 把等待安放状态的对象变成跑道的对象
     public void addPlan(Seedbank seedbank)
     {
-        // 在跑道同一个位置只能放置一个
-        if(seedbank.getStates()==Seedbank.EMPLACE_FLOWER)
+        for (int i = 0; i < plantPoints.size(); i++)
         {
-            plans.add(new Plan(seedbank.getLocationX(),seedbank.getLocationY(),Plan.PLAN_FLOWER));
+            Point point=plantPoints.get(i);
+            if(plans.get(i)!=null)
+            {
+                //BuglyLog.i(TAG, "同一个位置不能再放：   "+i+"   是否为空：  "+plans.get(i));
+                continue;
+            }
+            // 在跑道里面寻找合适的位置进行安放
+            int x=Math.abs(point.x-seedbank.getLocationX());
+            int y=Math.abs(point.y - seedbank.getLocationY());
+            // 找到合适位置之后,当前等待安放状态的对象的坐标位置还必须调整:单元格的坐标
+            if(x<cellWidth>>1&&y<cellHeight>>1)
+            {
+
+                if(seedbank.getStates()==Seedbank.EMPLACE_FLOWER)
+                {
+                    plans.put(i,new Plan(point.x, point.y, Plan.PLAN_FLOWER));
+                }
+                else if(seedbank.getStates()==Seedbank.EMPLACE_PEA)
+                {
+                    plans.put(i,new Plan(point.x, point.y, Plan.PLAN_PEA));
+                }
+                else
+                {
+                    throw new RuntimeException("没有找到对应等待安放状态的对象:" + seedbank.getStates());
+                }
+                emplaces.clear();
+                break;
+            }
         }
-        else if(seedbank.getStates()==Seedbank.EMPLACE_PEA)
-        {
-            plans.add(new Plan(seedbank.getLocationX(),seedbank.getLocationY(),Plan.PLAN_PEA));
-        }
-        else
-        {
-            throw new RuntimeException("没有找到对应等待安放状态的对象:" + seedbank.getStates());
-        }
-        emplaces.clear();
     }
+
+    // 跑道里面的向日葵在一定的时间范围内产生阳光
+    public void addSun(Plan plan)
+    {
+        suns.add(new Sun(plan.getLocationX(), plan.getLocationY(), 0));
+    }
+
 }

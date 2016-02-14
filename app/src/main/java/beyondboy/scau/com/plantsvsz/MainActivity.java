@@ -3,8 +3,10 @@ package beyondboy.scau.com.plantsvsz;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
@@ -71,38 +73,56 @@ public class MainActivity extends AppCompatActivity
                 sbHeight);
         Config.seedPeaBitmap= bitmap;
         // 跑道图片的初始化
-        flowerBitmaps[0] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_01),sbWidth/ 7,
+        flowerBitmaps[0] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_01,options),sbWidth/ 7,
                 sbHeight);
-        flowerBitmaps[1] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_02),sbWidth/ 7,
+        flowerBitmaps[1] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_02,options),sbWidth/ 7,
                 sbHeight);
-        flowerBitmaps[2] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_03),sbWidth/ 7,
+        flowerBitmaps[2] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_03,options),sbWidth/ 7,
                 sbHeight);
-        flowerBitmaps[3] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_04),sbWidth/ 7,
+        flowerBitmaps[3] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_04,options),sbWidth/ 7,
                 sbHeight);
-        flowerBitmaps[4] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_05),sbWidth/ 7,
+        flowerBitmaps[4] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_05,options),sbWidth/ 7,
                 sbHeight);
-        flowerBitmaps[5] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_06),sbWidth/ 7,
+        flowerBitmaps[5] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_06,options),sbWidth/ 7,
                 sbHeight);
-        flowerBitmaps[6] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_07),sbWidth/ 7,
+        flowerBitmaps[6] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_07,options),sbWidth/ 7,
                 sbHeight);
-        flowerBitmaps[7] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_08),sbWidth/ 7,
+        flowerBitmaps[7] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_1_08,options),sbWidth/ 7,
                 sbHeight);
 
-        peaBitmaps[0] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_01),sbWidth/ 7,
+        peaBitmaps[0] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_01,options),sbWidth/ 7,
                 sbHeight);
-        peaBitmaps[1] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_02),sbWidth/ 7,
+        peaBitmaps[1] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_02,options),sbWidth/ 7,
                 sbHeight);
-        peaBitmaps[2] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_03),sbWidth/ 7,
+        peaBitmaps[2] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_03,options),sbWidth/ 7,
                 sbHeight);
-        peaBitmaps[3] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_04),sbWidth/ 7,
+        peaBitmaps[3] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_04,options),sbWidth/ 7,
                 sbHeight);
-        peaBitmaps[4] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_05),sbWidth/ 7,
+        peaBitmaps[4] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_05,options),sbWidth/ 7,
                 sbHeight);
-        peaBitmaps[5] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_06),sbWidth/ 7,
+        peaBitmaps[5] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_06,options),sbWidth/ 7,
                 sbHeight);
-        peaBitmaps[6] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_07),sbWidth/ 7,
+        peaBitmaps[6] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_07,options),sbWidth/ 7,
                 sbHeight);
-        peaBitmaps[7] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_08),sbWidth/ 7,
+        peaBitmaps[7] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.p_2_08,options),sbWidth/ 7,
+                sbHeight);
+        // 跑道单元格的宽高
+        // 左侧留1.5个单元格,跑道有9列,右侧0.5个单元格
+        cellWidth = SCREENINFO.x / 11;
+        // 顶部留0.85个单元格,跑道有5行,底部0.5个单元格
+        cellHeight =SCREENINFO.y/ 6;
+        plantPoints=new SparseArray<>();
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 9; j++)
+            {
+                int key=i*9+j;
+                int x=(int)(cellWidth*1.5)+j*cellWidth;
+                int y=(int)(cellHeight*0.85)+i*cellHeight;
+                plantPoints.put(key,new Point(x,y));
+            }
+        }
+        sunBitmap=ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources,R.drawable.sun,options),sbWidth/ 7,
                 sbHeight);
     }
 }
