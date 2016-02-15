@@ -88,7 +88,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         runing=true;
         // 初始化画笔
         paint = new Paint();
-        paint.setColor(Color.YELLOW);
+        paint.setColor(Color.RED);
         seedbanks=new LinkedList<>();
         emplaces=new LinkedList<>();
         plans=new SparseArray<>();
@@ -166,8 +166,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             {
                 seedbank.drawSelf(canvas);
             }
+            paint.setTextSize(50.f);
+            // 绘制面板上面的分值
+            canvas.drawText(String.valueOf(Config.totalScore), Config.seedbankX+10 + cellWidth / 6, (int) (cellHeight * 0.83), paint);
             // 绘制跑道的单元格线
-            for (int i = 0; i < 5; i++)
+            /*for (int i = 0; i < 5; i++)
             {
                 int y=(int)(cellHeight*0.85)+i*cellHeight;
                 int startx=0;
@@ -178,7 +181,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 int x=(int)(cellHeight*1.5)+j*cellWidth;
                 int starty=0;
                 canvas.drawLine(x,starty,x,Config.SCREENINFO.y,paint);
-            }
+            }*/
            // BuglyLog.i(TAG, "容量：   "+plans.size());
             // 绘制放在跑道对象的图片
             for (int i = 0; i < plantPoints.size(); i++)
@@ -223,6 +226,13 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
+        for(Sun sun:suns)
+        {
+            if(sun.onTouch(event))
+            {
+                return  true;
+            }
+        }
         // 处理等待安放到跑道的对象的触屏事件
         for (Seedbank seedbank : emplaces)
         {
@@ -302,7 +312,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     // 跑道里面的向日葵在一定的时间范围内产生阳光
     public void addSun(Plan plan)
     {
-        suns.add(new Sun(plan.getLocationX(), plan.getLocationY(), 0));
+        suns.add(new Sun(plan.getLocationX(), plan.getLocationY(), Sun.SHOW));
     }
 
 }

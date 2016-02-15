@@ -45,4 +45,14 @@ public final class Config
     public static int createBulletTime = 4000;
     // 一定的时间范围内没有收集阳光,阳光死亡
     public static int deadSun = 3000;
+    // 收集阳光的速度
+    public static int moveSun = 4;
+    // 游戏的初始化分值
+    public static int totalScore = 300;
+    // 阳光收集一次分值
+    public static int sunScore = 25;
+    // 添加一次向日葵一次分值
+    public static int flowerScore = 50;
+    // 添加一次豌豆分值
+    public static int peaScore = 100;
 }

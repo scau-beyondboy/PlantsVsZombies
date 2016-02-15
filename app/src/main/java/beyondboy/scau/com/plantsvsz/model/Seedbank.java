@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 
 import com.tencent.bugly.crashreport.BuglyLog;
 
+import beyondboy.scau.com.plantsvsz.util.Config;
 import beyondboy.scau.com.plantsvsz.view.GameView;
 import static beyondboy.scau.com.plantsvsz.util.Config.*;
 
@@ -75,9 +76,15 @@ public class Seedbank extends BaseModel implements TouchAble
             {
                 case MotionEvent.ACTION_DOWN:
                     BuglyLog.i(TAG,"选中了面板上面对象,把面板对象变成等待安放到跑道的对象");
-                    if(states==SEED_FLOWER||states==SEED_PEA)
+                    if(states==SEED_FLOWER&& Config.totalScore>=50)
                     {
                         GameView.getInstanse().addEmplace(this);
+                        Config.totalScore-=50;
+                    }
+                    else if(states==SEED_PEA&&Config.totalScore>=100)
+                    {
+                        GameView.getInstanse().addEmplace(this);
+                        Config.totalScore-=100;
                     }
                     return true;
                 case MotionEvent.ACTION_MOVE:
