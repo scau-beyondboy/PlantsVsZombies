@@ -71,7 +71,7 @@ public abstract class BaseModel
         return life;
     }
 
-    public boolean isDean()
+    public boolean isDead()
     {
         return this.lifeValue<1;
     }

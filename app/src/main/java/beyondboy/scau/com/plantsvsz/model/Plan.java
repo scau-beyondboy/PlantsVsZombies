@@ -19,6 +19,8 @@ public class Plan extends BaseModel
     public static final int PLAN_FLOWER = 1;
     // status==PLAN_PEA表示当前对象就是豌豆
     public static final int PLAN_PEA = 2;
+    // status==PLAN_BULLET表示当前对象就是子弹
+    public static final int PLAN_BULLET = 3;
     //减慢对象摇摆速度
     private int slow=0;
     private int indexPea, indexFlower;
@@ -58,6 +60,27 @@ public class Plan extends BaseModel
         else if(states==PLAN_PEA)
         {
             canvas.drawBitmap(Config.peaBitmaps[indexPea],this.locationX,this.locationY,null);
+            // 在一定的时间范围内产生子弹
+            if (nowTime - this.createPeaTime > Config.createBullet)
+            {
+                this.createPeaTime = nowTime;
+                System.out.println("产生子弹");
+                GameView.getInstanse().addBullet(this);
+            }
+        }
+        // 跑道的子弹:向右移动
+        else if(states==PLAN_BULLET)
+        {
+            // 向右移动超过了屏幕的宽度
+            if(this.locationX>Config.SCREENINFO.x)
+            {
+                this.lifeValue=0;
+            }
+            else
+            {
+                canvas.drawBitmap(Config.bulletBitmap,this.locationX,this.locationY,null);
+                this.locationX+=Config.moveBulletX;
+            }
         }
         else
         {

@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity
         Resources resources = getResources();
         Bitmap bitmap;
         BitmapFactory.Options options=new BitmapFactory.Options();
+        options.inMutable=true;
         options.inDensity=Config.DENSITYDPI;
         // 缩放背景图片
         bitmap= BitmapFactory.decodeResource(resources, R.drawable.bk,options);
@@ -120,9 +121,21 @@ public class MainActivity extends AppCompatActivity
                 int x=(int)(cellWidth*1.5)+j*cellWidth;
                 int y=(int)(cellHeight*0.85)+i*cellHeight;
                 plantPoints.put(key,new Point(x,y));
+                if(j==0)
+                {
+                    raceWayYpoints[i]=(int) (cellHeight * (0.3 + i));
+                }
             }
         }
         sunBitmap=ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources,R.drawable.sun,options),sbWidth/ 7,
                 sbHeight);
+
+        zombieBitmaps[0] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.z_1_01,options));
+        zombieBitmaps[1] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.z_1_02,options));
+        zombieBitmaps[2] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.z_1_03,options));
+        zombieBitmaps[3] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.z_1_04,options));
+        zombieBitmaps[4] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.z_1_05,options));
+        zombieBitmaps[5] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.z_1_06,options));
+        zombieBitmaps[6] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.z_1_07,options));
     }
 }

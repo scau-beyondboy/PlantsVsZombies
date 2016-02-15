@@ -55,4 +55,18 @@ public final class Config
     public static int flowerScore = 50;
     // 添加一次豌豆分值
     public static int peaScore = 100;
+    // 子弹移动的x
+    public static int moveBulletX = 5;
+    // 僵尸移动的x
+    public static int moveZombieX = 5;
+    // 定义子弹的图片
+    public static Bitmap bulletBitmap;
+    // 定义僵尸的图片
+    public static Bitmap[] zombieBitmaps = new Bitmap[7];
+    // 一定的时间范围内产生子弹
+    public static int createBullet=4000;
+    // 定义5个跑道索引对应的y坐标(就是僵尸的y坐标):在初始化plantPoints
+    public static int[] raceWayYpoints = new int[5];
+    // 一定的时间范围内产生僵尸
+    public static int createZombie = 3000;
 }

@@ -11,13 +11,15 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Random;
 
 import beyondboy.scau.com.plantsvsz.model.Plan;
 import beyondboy.scau.com.plantsvsz.model.Seedbank;
 import beyondboy.scau.com.plantsvsz.model.Sun;
+import beyondboy.scau.com.plantsvsz.model.Zombie;
 import beyondboy.scau.com.plantsvsz.util.Config;
 
 import static beyondboy.scau.com.plantsvsz.util.Config.cellHeight;
@@ -51,6 +53,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private SparseArray<Plan> plans;
     // 装跑道的阳光
     private List<Sun> suns;
+    // 装跑道的子弹
+    private LinkedList<Plan> bullets;
+    // 装跑道的僵尸
+    private LinkedList<Zombie> zombies;
     private static GameView gameView;
     public GameView(Context context)
     {
@@ -92,8 +98,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         seedbanks=new LinkedList<>();
         emplaces=new LinkedList<>();
         plans=new SparseArray<>();
-        suns=new CopyOnWriteArrayList<>();
+        suns=new LinkedList<>();
+        zombies=new LinkedList<>();
         Bitmap bitmap=Config.seedbankBitmap;
+        bullets=new LinkedList<>();
         // BuglyLog.i(TAG, "数值计算："+(4+8<<1));
         // 计算面板上面图片的宽度
         int sbkimWidth=bitmap.getWidth()/7;
@@ -128,7 +136,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public void run()
     {
-        Canvas canvas=null;
+        Canvas canvas;
         SurfaceHolder holder=this.surfaceHolder;
         while (runing&&holder!=null)
         {
@@ -193,16 +201,43 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     plan.drawSelf(canvas);
                 }
             }
-            for(Sun sun:suns)
+            // 绘制阳光的图片
+            for (Iterator<Sun> iterator = suns.iterator(); iterator.hasNext();)
             {
-                //阳光没有手机死亡就不绘制
-                if(sun.isDean())
+                Sun sun = iterator.next();
+                // 阳光已经死亡
+                if (sun.isDead())
                 {
-                    suns.remove(sun);
-                }
-                else
+                    iterator.remove();
+                } else
                 {
                     sun.drawSelf(canvas);
+                }
+            }
+            // 绘制子弹的图片
+            for (Iterator<Plan> iterator = bullets.iterator(); iterator.hasNext();)
+            {
+                Plan bullet = iterator.next();
+                // 子弹已经死亡
+                if (bullet.isDead())
+                {
+                    iterator.remove();
+                } else
+                {
+                    bullet.drawSelf(canvas);
+                }
+            }
+            // 绘制僵尸的图片
+            for(Iterator<Zombie> iterator=zombies.iterator();iterator.hasNext();)
+            {
+                Zombie zombie=iterator.next();
+                //僵尸已经死亡
+                if (zombie.isDead())
+                {
+                    iterator.remove();
+                } else
+                {
+                    zombie.drawSelf(canvas);
                 }
             }
             // 绘制等待安放到跑道的图片
@@ -210,6 +245,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             {
                 seedbank.drawSelf(canvas);
             }
+            addZombie();
         }
     }
    /* private void drawBitmap(WeakReference<Bitmap> bitmapWeakReference,Canvas canvas,int x,int y,Paint paint)
@@ -315,4 +351,35 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         suns.add(new Sun(plan.getLocationX(), plan.getLocationY(), Sun.SHOW));
     }
 
+    public void addBullet(Plan plan)
+    {
+        bullets.add(new Plan(plan.getLocationX(),plan.getLocationY(),Plan.PLAN_BULLET));
+    }
+
+    // 通过僵尸的y坐标找到索引
+    private static int getIndex(Zombie zombie)
+    {
+        for (int i = 0; i <Config.raceWayYpoints.length; i++)
+        {
+            if (Config.raceWayYpoints[i] == zombie.getLocationY())
+            {
+                return i;
+            }
+        }
+        return 0;
+    }
+    // 间隔一定的时间随机产生僵尸
+    private static Random random = new Random();
+    private long createZombieTime;
+    private void addZombie()
+    {
+        long nowTime=System.currentTimeMillis();
+        if(nowTime-createZombieTime>Config.createZombie)
+        {
+            createZombieTime=nowTime;
+            // 随机数0-4
+            int index=random.nextInt(5);
+            zombies.add(new Zombie(Config.SCREENINFO.x,Config.raceWayYpoints[index],0));
+        }
+    }
 }
