@@ -21,6 +21,7 @@ public class Plan extends BaseModel
     public static final int PLAN_PEA = 2;
     // status==PLAN_BULLET表示当前对象就是子弹
     public static final int PLAN_BULLET = 3;
+    private static final String TAG = Plan.class.getName();
     //减慢对象摇摆速度
     private int slow=0;
     private int indexPea, indexFlower;
@@ -46,6 +47,7 @@ public class Plan extends BaseModel
     @Override
     public void drawSelf(Canvas canvas)
     {
+        if(canvas==null)return;
         long nowTime=System.currentTimeMillis();
         if(states==PLAN_FLOWER)
         {
@@ -72,7 +74,7 @@ public class Plan extends BaseModel
         else if(states==PLAN_BULLET)
         {
             // 向右移动超过了屏幕的宽度
-            if(this.locationX>Config.SCREENINFO.x)
+            if(this.locationX>=Config.SCREENINFO.x)
             {
                 this.lifeValue=0;
             }

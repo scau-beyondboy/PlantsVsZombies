@@ -18,8 +18,6 @@ public abstract class BaseModel
     //业务对象的x，y坐标
     protected int locationX;
     protected int locationY;
-    //业务对象的生命值
-    protected int life;
     // 矩形对象:判断是否触屏到了当前的对象
     protected Rect mRect;
     // 状态:区分是什么植物向日葵,豌豆,子弹
@@ -27,6 +25,16 @@ public abstract class BaseModel
     protected Bitmap mBitmap;
     // 生命值:小于1表示当前对象已经死亡
     protected int lifeValue = 10;
+
+    public int getLifeValue()
+    {
+        return lifeValue;
+    }
+
+    public void setLifeValue(int lifeValue)
+    {
+        this.lifeValue = lifeValue;
+    }
 
     public BaseModel(int locationX, int locationY, int status,Bitmap bitmap)
     {
@@ -66,18 +74,10 @@ public abstract class BaseModel
         this.locationY = locationY;
     }
 
-    public int getLife()
-    {
-        return life;
-    }
 
     public boolean isDead()
     {
         return this.lifeValue<1;
-    }
-    public void setLife(int life)
-    {
-        this.life = life;
     }
 
     public Rect getRect()

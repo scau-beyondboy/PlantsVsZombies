@@ -56,7 +56,7 @@ public final class Config
     // 添加一次豌豆分值
     public static int peaScore = 100;
     // 子弹移动的x
-    public static int moveBulletX = 5;
+    public static int moveBulletX = 8;
     // 僵尸移动的x
     public static int moveZombieX = 5;
     // 定义子弹的图片

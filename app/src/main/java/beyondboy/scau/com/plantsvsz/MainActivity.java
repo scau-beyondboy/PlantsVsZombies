@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity
         }
         sunBitmap=ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources,R.drawable.sun,options),sbWidth/ 7,
                 sbHeight);
-
+        bulletBitmap=ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources,R.drawable.bullet,options));
         zombieBitmaps[0] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.z_1_01,options));
         zombieBitmaps[1] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.z_1_02,options));
         zombieBitmaps[2] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.z_1_03,options));
@@ -137,5 +137,13 @@ public class MainActivity extends AppCompatActivity
         zombieBitmaps[4] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.z_1_05,options));
         zombieBitmaps[5] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.z_1_06,options));
         zombieBitmaps[6] = ImageUtils.resizeBitmap(BitmapFactory.decodeResource(resources, R.drawable.z_1_07,options));
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        GameView.getInstanse().destroyDrawingCache();
+        GameView.getInstanse().stopRun();
     }
 }

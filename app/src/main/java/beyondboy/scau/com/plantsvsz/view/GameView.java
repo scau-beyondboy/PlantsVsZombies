@@ -25,6 +25,7 @@ import beyondboy.scau.com.plantsvsz.util.Config;
 import static beyondboy.scau.com.plantsvsz.util.Config.cellHeight;
 import static beyondboy.scau.com.plantsvsz.util.Config.cellWidth;
 import static beyondboy.scau.com.plantsvsz.util.Config.plantPoints;
+import static beyondboy.scau.com.plantsvsz.util.Config.zombieBitmaps;
 
 /**
  * Author:beyondboy
@@ -130,7 +131,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             thread.interrupt();
             thread=null;
         }
-        surfaceHolder.removeCallback(this);
+        if(surfaceHolder!=null)
+            surfaceHolder.removeCallback(this);
     }
 
     @Override
@@ -192,11 +194,15 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             }*/
            // BuglyLog.i(TAG, "容量：   "+plans.size());
             // 绘制放在跑道对象的图片
-            for (int i = 0; i < plantPoints.size(); i++)
+            for (int i = 0; i < plans.size(); i++)
             {
-                Plan plan=plans.get(i);
+                Plan plan=plans.valueAt(i);
+                if(plan.isDead())
+                {
+                    plans.remove(i);
+                }
                // BuglyLog.i(TAG, "是否为空：  "+plans.get(i)+"   索引：  "+i);
-                if(plan!=null)
+                else
                 {
                     plan.drawSelf(canvas);
                 }
@@ -381,5 +387,46 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             int index=random.nextInt(5);
             zombies.add(new Zombie(Config.SCREENINFO.x,Config.raceWayYpoints[index],0));
         }
+    }
+    public void checkLife(Zombie zombie)
+    {
+        int index=getIndex(zombie);
+        // 对跑道里面的向日葵,豌豆进行碰撞检测
+        for (int i = 0; i < plans.size(); i++)
+        {
+            Plan plan=plans.valueAt(i);
+            int x = Math.abs(plan.getLocationX() - zombie.getLocationX());
+            // 怎样判断是在同一行:对比LocationY
+            int locationY = (int) (cellHeight * 0.85) + index * cellHeight;
+            if(x<zombieBitmaps[0].getWidth()>>1&&plan.getLocationY()==locationY)
+            {
+                plan.setLifeValue(0);
+            }
+        }
+        // 对跑道里面的子弹进行碰撞检测:子弹碰到了僵尸,子弹消失,僵尸生命值-5
+        for (Plan bullet : bullets)
+        {
+            int x = Math.abs(bullet.getLocationX() - zombie.getLocationX());
+            int locationY = (int) (cellHeight * 0.85) + index * cellHeight;
+            // plan.getLocationY() + (int) (cellHeight * 0.15)
+            // (int) (cellHeight * 0.85) + i * cellHeight;
+            if (x < zombieBitmaps[0].getWidth() / 2 && bullet.getLocationY() == locationY)
+            {
+                System.out.println("子弹 发生了碰撞,增加音效");
+                bullet.setLifeValue(0);
+                zombie.setLifeValue(zombie.getLifeValue() - 5);
+            }
+        }
+    }
+    public void stopRun()
+    {
+        runing=false;
+        if(thread!=null)
+        {
+            thread.interrupt();
+            thread=null;
+        }
+        if(surfaceHolder!=null)
+            surfaceHolder.removeCallback(this);
     }
 }

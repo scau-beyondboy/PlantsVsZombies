@@ -3,6 +3,7 @@ package beyondboy.scau.com.plantsvsz.model;
 import android.graphics.Canvas;
 
 import beyondboy.scau.com.plantsvsz.util.Config;
+import beyondboy.scau.com.plantsvsz.view.GameView;
 
 import static beyondboy.scau.com.plantsvsz.util.Config.moveZombieX;
 import static beyondboy.scau.com.plantsvsz.util.Config.zombieBitmaps;
@@ -36,8 +37,8 @@ public class Zombie extends  BaseModel
                 index = 0;
             }
             this.locationX -= moveZombieX;
-            //由僵尸发起碰撞检测
-           // GameView.getInstanse().checkLife(this);
         }
+        //由僵尸发起碰撞检测
+        GameView.getInstanse().checkLife(this);
     }
 }
