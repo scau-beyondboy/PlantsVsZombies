@@ -16,7 +16,17 @@ import com.tencent.bugly.crashreport.BuglyLog;
 import beyondboy.scau.com.plantsvsz.util.Config;
 import beyondboy.scau.com.plantsvsz.util.ImageUtils;
 import beyondboy.scau.com.plantsvsz.view.GameView;
-import static beyondboy.scau.com.plantsvsz.util.Config.*;
+
+import static beyondboy.scau.com.plantsvsz.util.Config.SCREENINFO;
+import static beyondboy.scau.com.plantsvsz.util.Config.bulletBitmap;
+import static beyondboy.scau.com.plantsvsz.util.Config.cellHeight;
+import static beyondboy.scau.com.plantsvsz.util.Config.cellWidth;
+import static beyondboy.scau.com.plantsvsz.util.Config.flowerBitmaps;
+import static beyondboy.scau.com.plantsvsz.util.Config.peaBitmaps;
+import static beyondboy.scau.com.plantsvsz.util.Config.plantPoints;
+import static beyondboy.scau.com.plantsvsz.util.Config.raceWayYpoints;
+import static beyondboy.scau.com.plantsvsz.util.Config.sunBitmap;
+import static beyondboy.scau.com.plantsvsz.util.Config.zombieBitmaps;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -31,7 +41,7 @@ public class MainActivity extends AppCompatActivity
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         init();
-        mGameView = new GameView(this);
+        mGameView = new GameView(MyApplication.getInstance());
         setContentView(mGameView);
     }
 

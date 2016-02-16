@@ -420,6 +420,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     }
     public void stopRun()
     {
+        gameView=null;
         runing=false;
         if(thread!=null)
         {
